@@ -1,0 +1,24 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[dev-packages]
+
+[packages]
+sqlalchemy = "*"
+flask = "*"
+flask-sqlalchemy = "*"
+pandas = "*"
+black = "*"
+ipykernel = "*"
+plotly = "*"
+notebook = "*"
+matplotlib-pyplot = "*"
+matplotlib = "*"
+
+[requires]
+python_version = "3.7"
+
+[pipenv]
+allow_prereleases = true
