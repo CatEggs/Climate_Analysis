@@ -1,4 +1,5 @@
 from flask import Flask, jsonify, request
+import datetime as dt
 
 # Python SQL toolkit and Object Relational Mapper
 import sqlalchemy
@@ -47,12 +48,34 @@ def stations():
     return jsonify(station_data)
 
 
-# @app.route("/api/v1.0/tobs")
-# def tobs():
+@app.route("/api/v1.0/tobs")
+def tobs():
+    # Last 12 months of temp observations
+    last_yr = dt.date(2017, 8, 23) - dt.timedelta(days=366)
+    tobs_data = (
+        session.query(Measurement.station, Measurement.tobs, Measurement.date)
+        .filter(Measurement.date >= last_yr)
+        .all()
+    )
+    return jsonify(tobs_data)
+
+
+@app.route("/api/v1.0/<start>")
+def calc_temps(start):
+    temp_data = (
+        session.query(
+            func.min(Measurement.tobs),
+            func.avg(Measurement.tobs),
+            func.max(Measurement.tobs),
+        )
+        .filter(Measurement.date >= start)
+        .all()
+    )
+    return jsonify(temp_data)
 
 
 @app.route("/api/v1.0/<start>/<end>")
-def calc_temps(start, end="8/23/2017"):
+def calc_temps_full(start, end):
 
     temp_data = (
         session.query(
@@ -65,5 +88,7 @@ def calc_temps(start, end="8/23/2017"):
         .all()
     )
     return jsonify(temp_data)
+
+
 if __name__ == "__main__":
     app.run(debug=True)
