@@ -50,11 +50,20 @@ def stations():
 # @app.route("/api/v1.0/tobs")
 # def tobs():
 
-# @app.route("/api/v1.0/<start>")
-# def startdate(start):
 
-# @app.route("/api/v1.0/<start>/<end>")
-# def fulldate(start,end):
+@app.route("/api/v1.0/<start>/<end>")
+def calc_temps(start, end="8/23/2017"):
 
+    temp_data = (
+        session.query(
+            func.min(Measurement.tobs),
+            func.avg(Measurement.tobs),
+            func.max(Measurement.tobs),
+        )
+        .filter(Measurement.date >= start)
+        .filter(Measurement.date <= end)
+        .all()
+    )
+    return jsonify(temp_data)
 if __name__ == "__main__":
     app.run(debug=True)
